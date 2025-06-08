@@ -1,0 +1,50 @@
+# .github/workflows/build-and-release.yml
+name: Build and Check (Hybrid Workflow)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  release:
+    types: [published]
+  workflow_dispatch:    
+
+jobs:
+  build:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    name: Format Check & Tarball Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install --upgrade pip
+          pip install kivy black
+
+      - name: Run code formatting check
+        run: |
+          source .venv/bin/activate
+          black --check .
+
+      - name: Create tarball
+        run: |
+          mkdir -p dist
+          tar --exclude='.venv' --exclude='.git' --exclude='*.tar.gz' -czf dist/RoninsPiKivyDashboard.tar.gz .
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: roninspikivy-tarball
+          path: dist/RoninsPiKivyDashboard.tar.gz

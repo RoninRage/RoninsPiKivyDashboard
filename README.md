@@ -18,28 +18,17 @@ A lightweight, touch-optimized dashboard prototype built using [Kivy](https://ki
 - Touch-friendly buttons
 - Ready for extension with MQTT, REST APIs, and Home Assistant integration
 
+📘 See full documentation in the [GitHub Wiki](https://github.com/RoninRage/RoninsPiKivyDashboard/wiki)
+
 ## Getting Started
 
-### Requirements
+🧰 **Requirements Overview:** See the [System Requirements](https://github.com/RoninRage/RoninsPiKivyDashboard/wiki/Requirements)
 
-- Python 3.10+
-- `kivy` installed via `pip`
-- Raspberry Pi Zero 2 W with display
+📦 **Installation Instructions:** See the [Installation Guide](https://github.com/RoninRage/RoninsPiKivyDashboard/wiki/Installation)
 
-### Installation
+🧪 **Development Guide:** See the [Development Guide](https://github.com/RoninRage/RoninsPiKivyDashboard/wiki/Development)
 
-```bash
-git clone https://github.com/yourusername/RoninsPiKivyDashboard.git
-cd RoninsPiKivyDashboard
-python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-pip install kivy
-python main.py
-```
-
-### Development Environment
-
-This project is optimized for Visual Studio Code with a dedicated `.code-workspace` file. Python extensions are preconfigured.
+🔁 **Autostart Setup:** See the [Autostart Guide](https://github.com/RoninRage/RoninsPiKivyDashboard/wiki/Autostart)
 
 ## Created by
 
