@@ -44,7 +44,7 @@ jobs:
           tar --exclude='.venv' --exclude='.git' --exclude='*.tar.gz' -czf dist/RoninsPiKivyDashboard.tar.gz .
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: roninspikivy-tarball
           path: dist/RoninsPiKivyDashboard.tar.gz
