@@ -1,5 +1,7 @@
 # .github/workflows/build-and-release.yml
 name: Build and Check (Hybrid Workflow)
+permissions:
+  contents: read
 
 on:
   push:
