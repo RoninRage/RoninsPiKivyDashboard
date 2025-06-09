@@ -1,8 +1,5 @@
 # .github/workflows/build-and-release.yml
 name: Build and Check (Hybrid Workflow)
-permissions:
-  contents: read
-
 on:
   push:
     branches:
@@ -12,10 +9,10 @@ on:
       - main
   release:
     types: [published]
-  workflow_dispatch: 
+  workflow_dispatch:
 
 permissions:
-  contents: read  
+  contents: read
 
 jobs:
   build:
