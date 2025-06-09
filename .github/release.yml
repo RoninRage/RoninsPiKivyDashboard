@@ -1,0 +1,16 @@
+# .github/release.yml
+# 📌 GitHub Release Template für automatische Changelog-Kategorisierung
+
+changelog:
+  categories:
+    - title: 🚀 Features
+      labels:
+        - feature
+    - title: 🐛 Bug Fixes
+      labels:
+        - bug
+    - title: 🔧 Maintenance
+      labels:
+        - chore
+  change-template: "- $title (#$number)"
+  no-changes-template: "No changes included in this release."
