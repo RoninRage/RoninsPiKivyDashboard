@@ -1,16 +1,14 @@
 import os
 import sys
-import shutil
-import tarfile
-import tempfile
 import requests
-
 from kivy.app import App
 from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelItem
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.progressbar import ProgressBar
+from kivy.clock import Clock
 
 from update_check import is_update_available
 from updater import download_and_apply_update
@@ -26,7 +24,12 @@ class RoninsDashboard(TabbedPanel):
         self.message_label = Label(
             text="Hello World from RoninsPiKivyDashboard!", font_size=20
         )
-        self.tab1.add_widget(self.message_label)
+        self.progress_bar = ProgressBar(max=100, value=0, size_hint_y=0.1)
+        self.progress_bar.opacity = 0  # initial versteckt
+        box = BoxLayout(orientation="vertical")
+        box.add_widget(self.message_label)
+        box.add_widget(self.progress_bar)
+        self.tab1.add_widget(box)
         self.add_widget(self.tab1)
 
         # Touch Tab
@@ -41,6 +44,16 @@ class RoninsDashboard(TabbedPanel):
 
     def on_button_press(self, instance):
         instance.text = "Touched!"
+
+    def update_status(self, text=None, progress=None):
+        def update(dt):
+            if text:
+                self.message_label.text += f"\n{text}"
+            if progress is not None:
+                self.progress_bar.opacity = 1 if progress < 100 else 0
+                self.progress_bar.value = progress
+
+        Clock.schedule_once(update)
 
     def check_for_updates(self):
         update_available, new_version, url = is_update_available()
@@ -63,9 +76,6 @@ class RoninsDashboard(TabbedPanel):
 
         popup = Popup(title="Update Available", content=box, size_hint=(0.8, 0.5))
 
-        def update_status(self, message):
-            self.message_label.text += f"\n{message}"
-
         def on_download(instance):
             popup.dismiss()
             download_and_apply_update(url, status_callback=self.update_status)
@@ -77,41 +87,6 @@ class RoninsDashboard(TabbedPanel):
         btn_skip.bind(on_press=on_skip)
 
         popup.open()
-
-    def download_and_apply_update(self, url):
-        try:
-            self.message_label.text += "\n\n⬇ Downloading update..."
-            temp_dir = tempfile.mkdtemp()
-            archive_path = os.path.join(temp_dir, "update.tar.gz")
-
-            with requests.get(url, stream=True, timeout=30) as r:
-                r.raise_for_status()
-                with open(archive_path, "wb") as f:
-                    for chunk in r.iter_content(chunk_size=8192):
-                        f.write(chunk)
-
-            with tarfile.open(archive_path, "r:gz") as tar:
-                tar.extractall(temp_dir)
-
-            extracted_root = os.path.join(temp_dir, os.listdir(temp_dir)[0])
-            current_dir = os.path.dirname(os.path.abspath(__file__))
-
-            for item in os.listdir(extracted_root):
-                src = os.path.join(extracted_root, item)
-                dst = os.path.join(current_dir, item)
-                if os.path.isdir(src):
-                    if os.path.exists(dst):
-                        shutil.rmtree(dst)
-                    shutil.copytree(src, dst)
-                else:
-                    shutil.copy2(src, dst)
-
-            self.message_label.text += "\n✅ Update applied. Restarting..."
-            App.get_running_app().stop()
-            os.execv(sys.executable, [sys.executable] + sys.argv)
-
-        except Exception as e:
-            self.message_label.text += f"\n❌ Update failed: {e}"
 
 
 class RoninsApp(App):
